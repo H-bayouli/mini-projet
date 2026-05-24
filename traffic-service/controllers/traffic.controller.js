@@ -30,3 +30,10 @@ exports.congested = (req, res) => {
     (err, result) => res.json(result)
   );
 };
+
+exports.getTraffic = (req, res) => {
+  db.query(
+    "SELECT t.id, z.name AS zone, t.density, t.level, t.timestamp FROM traffic_data t JOIN zones z ON t.zone_id = z.id",
+    (err, result) => res.json(result)
+  );
+};

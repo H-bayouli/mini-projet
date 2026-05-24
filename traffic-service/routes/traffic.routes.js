@@ -11,9 +11,9 @@ router.post("/add", controller.addTraffic);
 router.get("/", controller.getTraffic);
 
 // congestion
-router.get("/congested", controller.getCongestedZones);
+router.get("/congested", controller.congested);
 
 // stats (bonus)
-router.get("/stats", controller.getStats);
+//router.get("/stats", controller.getStats);
 
 module.exports = router;
