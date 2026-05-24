@@ -1,0 +1,115 @@
+version: "3.8"
+
+services:
+
+  # ================= AUTH DB =================
+  auth-db:
+    image: mysql:8
+    container_name: auth-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3307:3306"
+
+  # ================= VEHICLE DB =================
+  vehicle-db:
+    image: mysql:8
+    container_name: vehicle-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vehicle_db
+    ports:
+      - "3308:3306"
+
+  # ================= TRAFFIC DB =================
+  traffic-db:
+    image: mysql:8
+    container_name: traffic-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: traffic_db
+    ports:
+      - "3309:3306"
+
+  # ================= INCIDENT DB =================
+  incident-db:
+    image: mysql:8
+    container_name: incident-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: incident_db
+    ports:
+      - "3310:3306"
+
+  # ================= AUTH SERVICE =================
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "4001:4001"
+    depends_on:
+      - auth-db
+    environment:
+      DB_HOST: auth-db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: auth_db
+
+  # ================= VEHICLE SERVICE =================
+  vehicle-service:
+    build: ./vehicle-service
+    container_name: vehicle-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - vehicle-db
+    environment:
+      DB_HOST: vehicle-db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: vehicle_db
+
+  # ================= TRAFFIC SERVICE =================
+  traffic-service:
+    build: ./traffic-service
+    container_name: traffic-service
+    ports:
+      - "4003:4003"
+    depends_on:
+      - traffic-db
+    environment:
+      DB_HOST: traffic-db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: traffic_db
+
+  # ================= INCIDENT SERVICE =================
+  incident-service:
+    build: ./incident-service
+    container_name: incident-service
+    ports:
+      - "4004:4004"
+    depends_on:
+      - incident-db
+    environment:
+      DB_HOST: incident-db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: incident_db
+
+  # ================= GATEWAY =================
+  gateway:
+    build: ./gateway-graphql
+    container_name: gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - auth-service
+      - vehicle-service
+      - traffic-service
+      - incident-service
